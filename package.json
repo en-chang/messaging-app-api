@@ -1,0 +1,27 @@
+{
+  "name": "messaging-app-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/en-chang/messaging-app-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/en-chang/messaging-app-api/issues"
+  },
+  "homepage": "https://github.com/en-chang/messaging-app-api#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
