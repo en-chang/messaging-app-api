@@ -1,38 +1,46 @@
 const express = require('express');
 const cors = require('cors');
+const knex = require('knex');
+
+// database
+const db = knex({
+  client: 'pg',
+  connection: {
+    host : '127.0.0.1',
+    port : 5432,
+    user : 'ian',
+    password : '',
+    database : 'messaging-app'
+  }
+});
+
+db.select('*').from('users');
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-// mock database
-const db = {
-  users: [
-    {
-      id: '1',
-      email: 'asdf@example.com',
-      password: 'asdf'
-    },
-    {
-      id: '2',
-      email: 'fdsa@example.com',
-      password: 'fdsa'
-    }
-  ]
-}
- 
 app.get('/', (req, res) => {
   res.send('Hello messaging-app-api');
 })
 
 app.post('/signin', (req, res) => {
-  if (req.body.email === db.users[0].email &&
-      req.body.password === db.users[0].password) {
-        res.json('signed in');
-  } else {
-    res.status(400).json('error logging in');
-  }
+  db.select('email', 'password').from('users')
+    .where('email', '=', req.body.email)
+    .then(data => {
+      if (req.body.password === data[0].password) {
+        return db.select('*').from('users')
+          .where('email', '=', req.body.email)
+          .then(user => {
+            res.json(user[0])
+          })
+          .catch(err => res.status(400).json('unable to get user'))
+      } else {
+        res.status(400).json('wrong credentials')
+      }
+    })
+    .catch(err => res.status(400).json('wrong credentials'))
 })
 
 app.get('/user/:id', (req, res) => {
