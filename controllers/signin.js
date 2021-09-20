@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 const handleSignin = (req, res, db) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -22,11 +24,25 @@ const getAuthTokenId = () => {
   console.log('auth ok');
 }
 
+const signToken = (email) => {
+  const jwtPayload = { email };
+  return jwt.sign(jwtPayload, 'JWT_SECRET', { expiresIn: '2 days'});
+}
+
+const createSessions = (user) => {
+  const { email } = user;
+  const token = signToken(email);
+  return { success: 'true', email, token };
+}
+
 const signinAuthentication = (req, res, db) => {
   const { authorization } = req.headers;
   return authorization ? getAuthTokenId() : 
     handleSignin(req, res, db)
-      .then(data => res.json(data))
+      .then(data => {
+        return data.email ? createSessions(data) : Promise.reject(data)
+      })
+      .then(session => res.json(session))
       .catch(err => res.status(400).json(err))
 }
 
