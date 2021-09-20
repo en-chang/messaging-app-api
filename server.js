@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
   res.send('Hello messaging-app-api');
 })
 
-app.post('/signin', (req, res) => { signin.handleSignin(req, res, db) })
+app.post('/signin', (req, res) => { signin.signinAuthentication(req, res, db) })
 
 app.get('/user/:email', (req, res) => {
   const { email } = req.params;
