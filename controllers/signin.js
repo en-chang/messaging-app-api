@@ -33,10 +33,18 @@ const signToken = (email) => {
   return jwt.sign(jwtPayload, 'JWT_SECRET', { expiresIn: '2 days'});
 }
 
+const setToken = (token, email) => {
+  return Promise.resolve(redisClient.set(token, email))
+}
+
 const createSessions = (user) => {
   const { email } = user;
   const token = signToken(email);
-  return { success: 'true', email, token };
+  return setToken(token, email)
+    .then(() => { 
+      return { success: 'true', email, token }
+    })
+    .catch(console.log)
 }
 
 const signinAuthentication = (req, res, db) => {
